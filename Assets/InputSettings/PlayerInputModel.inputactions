@@ -1,0 +1,45 @@
+{
+    "name": "PlayerInputModel",
+    "maps": [
+        {
+            "name": "BallControl",
+            "id": "51da55e9-4e00-4a21-b728-c4ffd2d21718",
+            "actions": [
+                {
+                    "name": "TouchScreen",
+                    "type": "Button",
+                    "id": "1d6d774b-9190-4c20-bb54-191437e937bf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "82f56509-df98-4212-9efb-e68f019d6759",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TouchScreen",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "59dd8d68-af38-4177-9753-de87166fd897",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TouchScreen",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
