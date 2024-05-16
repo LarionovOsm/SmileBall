@@ -7,13 +7,14 @@ public class GameSettings : ScriptableObject
 {
     [Header("Control settings")]
     [Range(0,1)] public float TouchTimeScale;
-    [Range(0, 100)] public float TouchError;
+    [Range(0, 0.5f)] public float TouchError;
     [Header("UI Control settings")]
     [Range(0, 5)] public float CanvasGroupFadeTime;
     [Header("Player settings")]
     [Range(1,5)] public int MaxHealthAmount;
     [Range(0, 1)] public float MinSpeedToStartAcceleration;
     [Range(0,15)] public float MaxAcceleration;
+    [Range(0, 5)] public float ClampLimit;
     [Header("Level settings")]
     [Range(0, 5)] public float CheckPointDistanceError;
 }

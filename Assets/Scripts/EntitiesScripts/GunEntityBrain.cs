@@ -10,10 +10,20 @@ public class GunEntityBrain : BaseEntityBrain
         _projectileGenerator = GameManager.instance.CannonGenerator;
     }
 
-    public override void GenerateProjectile()
+    public override void GenerateProjectile(Collider aim)
     {
-        base.GenerateProjectile();
+        base.GenerateProjectile(aim);
         _projectileGenerator.CreateProjectile(_shotPosition,  _projectileSpeed, _damage);
+    }
+
+    public override void TryShoot(Collider aim)
+    {
+        if (Time.time < _nextShotTime) return;
+        else
+        {
+            _nextShotTime = Time.time + _rechargeDelay;
+            GenerateProjectile(aim);
+        }
     }
 
     public override void SetSettings()

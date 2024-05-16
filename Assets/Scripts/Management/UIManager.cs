@@ -40,7 +40,6 @@ public class UIManager : MonoBehaviour
             .AppendCallback(() => _hUD.gameObject.SetActive(true))
             .AppendCallback(() => ResetHUD())
             .AppendCallback(() => GameManager.instance.PlayerController.ControlAccess(true));
-        //_uiSequence.Kill();
     }
     #endregion
 
@@ -65,7 +64,6 @@ public class UIManager : MonoBehaviour
             .AppendCallback(() => _restartButton.gameObject.SetActive(true))
             .AppendInterval(2f)
             .Append(_restartButton.DOFade(1, GameManager.instance.GameSettings.CanvasGroupFadeTime));
-        //_uiSequence.Kill();
     }
     #endregion
 

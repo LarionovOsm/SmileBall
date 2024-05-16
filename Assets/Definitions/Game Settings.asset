@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Game Settings
   m_EditorClassIdentifier: 
   TouchTimeScale: 0.25
-  TouchError: 20
+  TouchError: 0.3
   CanvasGroupFadeTime: 1
   MaxHealthAmount: 3
-  MinSpeedToStartAcceleration: 0.5
-  MaxAcceleration: 13
+  MinSpeedToStartAcceleration: 0.7
+  MaxAcceleration: 7
+  ClampLimit: 3
   CheckPointDistanceError: 3

@@ -25,9 +25,10 @@ public class GameManager : MonoBehaviour
     public LevelController LevelController => _levelController; 
     public PlayerController PlayerController => _playerController;  
     public ProjectileGenerator CannonGenerator => _cannonGenerator;
-    public ProjectileGenerator LaserGenerator => _laserGenerator;   
+    public ProjectileGenerator LaserGenerator => _laserGenerator;
     #endregion
 
+    #region EventFunctions
     private void Awake()
     {
         if (instance == null)
@@ -39,7 +40,9 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    #endregion
 
+    #region GameStateFunctions
     public void StartGame()
     {
         _uiManager.StartGame();
@@ -53,4 +56,5 @@ public class GameManager : MonoBehaviour
         _playerController.ControlAccess(false);
         _uiManager.ShowWinLosePopUp("Win");
     }
+    #endregion
 }

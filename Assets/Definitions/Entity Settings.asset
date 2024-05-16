@@ -19,6 +19,7 @@ MonoBehaviour:
     _aimSearchTime: 0.8
     _rechargeDelay: 2
     _projectileSpeed: 2
+    _laserAttackTime: 0
     _projectileDamage: 1
   - _name: LaserGun
     _triggerRadius: 5
@@ -26,4 +27,5 @@ MonoBehaviour:
     _aimSearchTime: 0.8
     _rechargeDelay: 4
     _projectileSpeed: 0
-    _projectileDamage: 0
+    _laserAttackTime: 2
+    _projectileDamage: 3

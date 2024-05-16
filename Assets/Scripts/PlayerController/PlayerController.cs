@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private float _maxAcceleleration;
+    private float _clampLimit;
     private Rigidbody _rigidbody;
     private PlayerInput _playerInput;
     private LineRenderer _pathLine;
@@ -30,7 +31,9 @@ public class PlayerController : MonoBehaviour
     #region ControlFunctions
     public void AccelerateBall(Vector3 direction)
     {
-        _rigidbody.AddForce(direction * _maxAcceleleration, ForceMode.Impulse);
+        Vector3 clampDirection = ClampDirection(direction, _clampLimit);
+        float accelertion = clampDirection.magnitude / _clampLimit * _maxAcceleleration;
+        _rigidbody.AddForce(direction * accelertion, ForceMode.Impulse);
     }
 
     public void ControlAccess(bool enabled)
@@ -45,6 +48,7 @@ public class PlayerController : MonoBehaviour
         this.gameObject.transform.position = GameManager.instance.LevelController.StartPosition.position;
         this._rigidbody.velocity = Vector3.zero;
         _maxAcceleleration = GameManager.instance.GameSettings.MaxAcceleration;
+        _clampLimit = GameManager.instance.GameSettings.ClampLimit;
         _playerInput.enabled = false;
     }
     #endregion
@@ -52,8 +56,15 @@ public class PlayerController : MonoBehaviour
     #region FeaturesFunctions
     public void DrawPathLine(Vector3 direction) 
     {
+        Vector3 clampDirection = ClampDirection(direction, _clampLimit);
         _pathLine.SetPosition(0, transform.position);
-        _pathLine.SetPosition(1, direction);
+        _pathLine.SetPosition(1, clampDirection + transform.position);
+    }
+
+    public Vector3 ClampDirection(Vector3 direction, float clampLimit)
+    {
+        Vector3 clampDirection = new Vector3(Mathf.Clamp(direction.x, -clampLimit, clampLimit), Mathf.Clamp(direction.y, -clampLimit, clampLimit), direction.z);
+        return clampDirection;
     }
     #endregion
 

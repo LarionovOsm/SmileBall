@@ -15,11 +15,12 @@ public class ProjectileGenerator : MonoBehaviour
         this._pool.AutoExpand = _autoExpandable;
     }
 
-    public void CreateProjectile(Transform shotPosition, float speed, int damage)
+    public BasePojectile CreateProjectile(Transform shotPosition, float speed, int damage)
     {
         Vector3 position = shotPosition.position;
         BasePojectile projectile = this._pool.GetFreeElement();
         projectile.transform.position = position;
         projectile.StartLaunch(shotPosition, speed, damage);
+        return projectile;
     }
 }

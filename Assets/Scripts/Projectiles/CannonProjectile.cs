@@ -7,6 +7,7 @@ public class CannonProjectile : BasePojectile
     public override void ProjectileBehaviour()
     {
         base.ProjectileBehaviour();
+        _weaponType = TypeOfWeapon.Cannon;
         _projectileRigidbody.AddForce(_shotPosition.transform.up * _speed, ForceMode.Force);
     }
 

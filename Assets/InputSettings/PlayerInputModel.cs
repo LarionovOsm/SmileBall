@@ -42,7 +42,7 @@ public partial class @PlayerInputModel : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""82f56509-df98-4212-9efb-e68f019d6759"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""TouchScreen"",

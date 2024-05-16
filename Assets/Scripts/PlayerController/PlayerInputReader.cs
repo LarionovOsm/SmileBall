@@ -10,11 +10,22 @@ public class PlayerInputReader : MonoBehaviour
     private Vector3 _startTouchPosition;
     private Vector3 _endTouchPosition;
     private Vector3 _currentTouchPosition;
-    private Vector3 _worldPosition;
+    private IEnumerator _pathDrawCoroutine;
 
     private void OnValidate()
     {
         _playerController = GetComponent<PlayerController>();
+    }
+
+    private IEnumerator PathCalculate()
+    {
+        while(true)
+        {
+            _currentTouchPosition = Input.mousePosition;
+            Vector3 direction = ScreenToWorldCalculate(_startTouchPosition, _currentTouchPosition);
+            if (direction.magnitude > GameManager.instance.GameSettings.TouchError) _playerController.DrawPathLine(direction);
+            yield return null;
+        }
     }
 
     public void TouchScreen(InputAction.CallbackContext context)
@@ -25,23 +36,29 @@ public class PlayerInputReader : MonoBehaviour
             {
                 _startTouchPosition = Input.mousePosition;
                 Time.timeScale = GameManager.instance.GameSettings.TouchTimeScale;
-            }
-
-            if (context.performed)
-            {
-                _currentTouchPosition = Input.mousePosition;
-                Debug.Log(_currentTouchPosition);
-                Vector3 direction = (_currentTouchPosition - _startTouchPosition);
-                if (direction.magnitude > GameManager.instance.GameSettings.TouchError) _playerController.DrawPathLine(direction);
+                _pathDrawCoroutine = PathCalculate();
+                StartCoroutine(_pathDrawCoroutine);
             }
 
             if (context.canceled)
             {
                 _endTouchPosition = Input.mousePosition;
-                Vector3 direction = (_endTouchPosition - _startTouchPosition);
-                if (direction.magnitude > GameManager.instance.GameSettings.TouchError) _playerController.AccelerateBall(direction.normalized);
+                Vector3 direction = ScreenToWorldCalculate(_startTouchPosition, _endTouchPosition);
+                if (direction.magnitude > GameManager.instance.GameSettings.TouchError) _playerController.AccelerateBall(direction);
                 Time.timeScale = 1;
+                _playerController.DrawPathLine(Vector3.zero);
+                StopCoroutine(_pathDrawCoroutine);
             }
         }   
+    }
+
+    public Vector3 ScreenToWorldCalculate(Vector3 startPosition, Vector3 endPosition)
+    {
+        Camera mainCamera = Camera.main;
+        float nearPlane = mainCamera.nearClipPlane;
+        Vector3 startDot = mainCamera.ScreenToWorldPoint(new Vector3(startPosition.x, startPosition.y, nearPlane));
+        Vector3 endDot = mainCamera.ScreenToWorldPoint(new Vector3(endPosition.x, endPosition.y, nearPlane));
+        Vector3 direction = endDot - startDot;
+        return direction;
     }
 }

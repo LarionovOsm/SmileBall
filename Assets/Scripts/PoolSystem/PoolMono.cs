@@ -25,11 +25,7 @@ public class PoolMono<T> where T : MonoBehaviour
     public void CreatePool(int count)
     {
         _pool = new List<T>();
-
-        for (int i = 0; i < count; i++)
-        {
-            CreateObject();
-        }
+        for (int i = 0; i < count; i++) CreateObject();
     }
 
     private T CreateObject(bool IsActiveByDefault = false)
@@ -58,16 +54,8 @@ public class PoolMono<T> where T : MonoBehaviour
 
     public T GetFreeElement()
     {
-        if (HasFreeElement(out var element))
-        {
-            return element;
-        }
-
-        if (AutoExpand)
-        {
-            return CreateObject(true);
-        }
-
+        if (HasFreeElement(out var element)) return element;
+        if (AutoExpand) return CreateObject(true);
         return null;
     }
 }

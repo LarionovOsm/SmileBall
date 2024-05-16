@@ -16,15 +16,17 @@ public abstract class BaseEntityBrain : MonoBehaviour
     private protected float _aimSearchTime;
     private protected float _rechargeDelay;
     private protected float _projectileSpeed;
+    private protected float _nextShotTime = 0f;
     private protected int _damage;
     private protected string _name;
+    private protected bool _rotationEnabled = true;
     private protected SphereCollider _triggerZone;
     private protected ProjectileGenerator _projectileGenerator;
+    private protected Mode _mode = Mode.Patrol;
     private float _rotationDegree;
-    private float _nextShotTime = 0f;
+    private bool _isInTrigger;
     private Vector3 _rotation;
     private Sequence _changeModeSequence;
-    private Mode _mode = Mode.Patrol;
 
     public enum Mode { Patrol, Attack, Transition }
 
@@ -60,14 +62,16 @@ public abstract class BaseEntityBrain : MonoBehaviour
             Vector3 aimDirection = aim.transform.position - _cannonObject.position;
             Quaternion quaternion = RequiredAngle(aimDirection, _cannonObject.transform.up, Vector3.forward);
             _cannonObject.localRotation = quaternion;
+
             RaycastHit hit;
             Ray ray = new Ray(transform.position, aim.transform.position - transform.position);
             Physics.Raycast(ray, out hit, _triggerRadius, AimRaycastLayer);
+
             if (hit.collider != null)
             {
                 if (hit.collider.gameObject == aim.gameObject)
                 {
-                    TryShoot();
+                    TryShoot(aim);
                 }
                 Debug.DrawLine(ray.origin, hit.point, Color.red);
             }
@@ -75,18 +79,25 @@ public abstract class BaseEntityBrain : MonoBehaviour
         }
     }
 
-    private void TryShoot()
+    public void ContinueAttack(Collider aim)
     {
-        if (Time.time < _nextShotTime) return;
-        else
+        if (_mode == Mode.Transition && _isInTrigger)
         {
-            _nextShotTime = Time.time + _rechargeDelay;
-            GenerateProjectile();
+            _mode = Mode.Attack;
+            StartCoroutine(AttackMode(aim));
         }
+        else  ContinuePatrol();
     }
 
-    public virtual void GenerateProjectile() { }
-
+    public void ContinuePatrol()
+    {
+        _mode = Mode.Patrol;
+        StopAllCoroutines();
+        _rotation = _cannonObject.localEulerAngles;
+        _rotationDegree = _cannonObject.rotation.eulerAngles.z;
+        _cannonObject.localRotation = Quaternion.Euler(_rotation.x, _rotation.y, _rotationDegree);
+        StartCoroutine(PatrolMode());
+    }
     #endregion
 
     #region TriggersFunctions
@@ -94,6 +105,7 @@ public abstract class BaseEntityBrain : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            _isInTrigger = true;
             Vector3 aimDirection = other.transform.position - _cannonObject.position;
             Quaternion quaternion = RequiredAngle(aimDirection, _cannonObject.transform.up, Vector3.forward);
             _changeModeSequence = DOTween.Sequence()
@@ -108,13 +120,8 @@ public abstract class BaseEntityBrain : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            _mode = Mode.Patrol;
-            _nextShotTime = 0f;
-            StopAllCoroutines();
-            _rotation = _cannonObject.localEulerAngles;
-            _rotationDegree = _cannonObject.rotation.eulerAngles.z;
-            _cannonObject.localRotation = Quaternion.Euler(_rotation.x, _rotation.y, _rotationDegree);
-            StartCoroutine(PatrolMode());
+            _isInTrigger = false;
+            if (_mode != Mode.Transition) ContinuePatrol();    
         }
     }
     #endregion
@@ -129,13 +136,19 @@ public abstract class BaseEntityBrain : MonoBehaviour
     public virtual void SetStartParams() { }
     #endregion
 
-    private Quaternion RequiredAngle(Vector3 direction, Vector3 forward, Vector3 axis)
+    #region BehaviourFunctions
+    public virtual Quaternion RequiredAngle(Vector3 direction, Vector3 forward, Vector3 axis)
     {
         float angle = Vector3.SignedAngle(direction, forward, axis);
         float requredAngle = _cannonObject.localEulerAngles.z - angle;
         Quaternion requireQuaternion = Quaternion.Euler(0, 0, requredAngle);
         return requireQuaternion;
     }
+
+    public virtual void TryShoot(Collider aim) { }
+
+    public virtual void GenerateProjectile(Collider aim) { }
+    #endregion
 
     private void OnDrawGizmos()
     {

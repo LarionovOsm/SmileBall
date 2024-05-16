@@ -18,6 +18,7 @@ public class EntitySpecification
     [SerializeField] private float _aimSearchTime;
     [SerializeField] private float _rechargeDelay;
     [SerializeField] private float _projectileSpeed;
+    [SerializeField] private float _laserAttackTime;
     [SerializeField] private int _projectileDamage;
 
     #region References
@@ -27,6 +28,7 @@ public class EntitySpecification
     public float AimSearchTime => _aimSearchTime;
     public float RechargeDelay => _rechargeDelay;
     public float ProjectileSpeed => _projectileSpeed;
+    public float LaserAttackTime => _laserAttackTime;
     public int ProjectileDamage => _projectileDamage;
     #endregion
 }
